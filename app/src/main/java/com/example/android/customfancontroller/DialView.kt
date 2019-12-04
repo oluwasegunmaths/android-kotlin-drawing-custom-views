@@ -16,17 +16,16 @@
 
 package com.example.android.customfancontroller
 
+// import android.view.accessibility.AccessibilityNodeInfo
 import android.content.Context
 import android.graphics.*
 import android.util.AttributeSet
 import android.view.View
-import android.graphics.Typeface
 import android.view.accessibility.AccessibilityNodeInfo
 import androidx.core.content.withStyledAttributes
 import androidx.core.view.AccessibilityDelegateCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.accessibility.AccessibilityNodeInfoCompat
-// import android.view.accessibility.AccessibilityNodeInfo
 import kotlin.math.cos
 import kotlin.math.min
 import kotlin.math.sin
@@ -148,18 +147,18 @@ class DialView @JvmOverloads constructor(
             FanSpeed.LOW -> fanSpeedLowColor
             FanSpeed.MEDIUM -> fanSpeedMediumColor
             FanSpeed.HIGH -> fanSeedMaxColor
-        } as Int
+        }
         // Draw the dial.
         canvas.drawCircle((width / 2).toFloat(), (height / 2).toFloat(), radius, paint)
         // Draw the indicator circle.
-        val markerRadius = radius + RADIUS_OFFSET_INDICATOR
-        pointPosition.computeXYForSpeed(fanSpeed, markerRadius)
+        val markerRadius = radius - radius/12
+        pointPosition.computeXYForSped(fanSpeed, markerRadius)
         paint.color = Color.BLACK
         canvas.drawCircle(pointPosition.x, pointPosition.y, radius/12, paint)
         // Draw the text labels.
         val labelRadius = radius + RADIUS_OFFSET_LABEL
         for (i in FanSpeed.values()) {
-            pointPosition.computeXYForSpeed(i, labelRadius)
+            pointPosition.computeXYForSped(i, labelRadius)
             val label = resources.getString(i.label)
             canvas.drawText(label, pointPosition.x, pointPosition.y, paint)
         }
@@ -173,7 +172,7 @@ class DialView @JvmOverloads constructor(
      * @param radius Radius where label/indicator is to be drawn.
      * @return 2-element array. Element 0 is X-coordinate, element 1 is Y-coordinate.
      */
-    private fun PointF.computeXYForSpeed(pos: FanSpeed, radius: Float) {
+    private fun PointF.computeXYForSped(pos: FanSpeed, radius: Float) {
         // Angles are in radians.
         val startAngle = Math.PI * (9 / 8.0)
         val angle = startAngle + pos.ordinal * (Math.PI / 4)
